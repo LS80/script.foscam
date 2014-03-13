@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="32000">Foscam HD</string>
+
+  <string id="32001">Basic</string>
+  <string id="32002">Host</string>
+  <string id="32003">Port</string>
+  <string id="32004">Username</string>
+  <string id="32005">Password</string>
+
+  <string id="32011">Motion</string>
+  <string id="32012">Enable motion detection preview</string>
+  
+  <string id="32013">Motion check interval (seconds)</string>
+  <string id="32014">Sensitivity</string>
+  <string id="32015">Low</string>
+  <string id="32016">Medium</string>
+  <string id="32017">High</string>
+  <string id="32018">Lower</string>
+  <string id="32019">Lowest</string>
+
+  <string id="32020">Trigger interval (seconds)</string>
+  <string id="32021">Preview duration (seconds)</string>
+  <string id="32022">Minimum snapshot interval (milliseconds)</string>
+
+  <string id="32023">Snapshot quality</string>
+  <string id="32024">Low</string>
+  <string id="32025">Medium</string>
+  <string id="32026">High</string>
+
+  <string id="32027">Preview scale factor</string>
+
+  <string id="32028">Preview position</string>
+  <string id="32029">Bottom right</string>
+  <string id="32030">Bottom left</string>
+  <string id="32031">Top right</string>
+  <string id="32032">Top left</string>
+  
+  <string id="32051">Advanced</string>
+  <string id="32052">Debug logging</string>
+  <string id="32053">Off</string>
+  <string id="32054">Normal</string>
+  <string id="32055">Verbose</string>
+
+  <string id="32101">No host specified</string>
+  <string id="32102">Please check the settings</string>
+  <string id="32103">Error sending camera command</string>
+  <string id="32104">Error configuring camera</string>
+</strings>
+
+

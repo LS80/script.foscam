@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="32001">
+        <setting label="32002" type="text" id="host"/>
+        <setting label="32003" type="number" id="port" default="88"/>
+        <setting label="32004" type="text" id="username" default="admin"/>
+        <setting label="32005" type="text" id="password" option="hidden" enable="!eq(-1,)"/>
+    </category>
+    <category label="32011">
+        <setting label="32012" type="bool" id="motion_enable" default="true"/>
+            <setting label="32013" type="slider" id="check_interval" default="5" range="1,1,60" option="int" enable="eq(-1,true)" subsetting="true"/>
+            <setting label="32014" type="enum" id="motion_sensitivity" lvalues="32015|32016|32017|32018|32019" default="1" enable="eq(-2,true)" subsetting="true"/>
+            <setting label="32020" type="slider" id="trigger_interval" default="15" range="5,1,15" option="int" enable="eq(-3,true)" subsetting="true"/>
+            <setting label="32021" type="slider" id="preview_duration" default="10" range="2,1,60" option="int" enable="eq(-4,true)" subsetting="true"/>
+            <setting label="32022" type="slider" id="snapshot_interval" default="1500" range="400,100,5000" option="int" enable="eq(-5,true)" subsetting="true"/>
+            <setting label="32023" type="enum" id="snapshot_quality" lvalues="32024|32025|32026" default="1" option="int" enable="eq(-6,true)" subsetting="true"/>
+            <setting label="32027" type="slider" id="preview_scaling" default="1.0" range="0.4,0.2,4.0" option="float" enable="eq(-7,true)" subsetting="true"/>
+            <setting label="32028" type="labelenum" id="preview_position" lvalues="32029|32030|32031|32032" default="0" enable="eq(-8,true)" subsetting="true"/>
+    </category>
+    <category label="32051">
+        <setting label="32052" type="enum" id="debug" lvalues="32053|32054|32055" default="0"/>
+    </category>
+</settings>
