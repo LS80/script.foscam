@@ -19,6 +19,7 @@ class Main(object):
         utils.log_normal("Starting service")
         self.video_url = ""
         self.motion_detected = False
+        self.duration_shown = 0
 
         self.apply_settings()
 
@@ -34,7 +35,7 @@ class Main(object):
             self.motion_check()
 
             if self.motion_detected:
-                sleep = foscam.MOTION_DURATION + self.trigger_interval
+                sleep = foscam.MOTION_DURATION - self.duration_shown + self.trigger_interval
             else:
                 sleep = self.check_interval
             utils.log_verbose("Sleeping for {0} seconds".format(sleep))
@@ -103,7 +104,7 @@ class Main(object):
                 preview = CameraPreview(self.duration, self.snapshot_interval, self.path,
                                         self.scaling, self.position)
                 preview.show()
-                preview.start()
+                self.duration_shown = preview.start()
                 del(preview)
             elif alarm < 2:
                 self.motion_detected = False
@@ -204,6 +205,7 @@ class CameraPreview(xbmcgui.WindowDialog):
             
             current_time = time.time()
         self.close()
+        return int(current_time - start_time)
 
     def onControl(self, control):
         if control == self.close_button:
