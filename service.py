@@ -186,6 +186,11 @@ class CameraPreview(xbmcgui.WindowDialog):
             self.close_button = gui.Button(self, 'close', x + width - gui.Button.WIDTH - 10, y + 10)
             self.addControl(self.close_button)
             self.close_button.setAnimations(animations)
+            
+            trans = utils.TEXTURE_FMT.format('trans')
+            self.select_button = xbmcgui.ControlButton(x, y, width, height, "", trans, trans)
+            self.addControl(self.select_button)
+            self.select_button.setAnimations(animations)
 
     def start(self):
         start_time = time.time()
@@ -201,14 +206,20 @@ class CameraPreview(xbmcgui.WindowDialog):
         self.close()
 
     def onControl(self, control):
-        self.stop()
+        if control == self.close_button:
+            self.stop()
+        elif control == self.select_button:
+            self.run()
             
     def onAction(self, action):
         if action in (utils.ACTION_PREVIOUS_MENU, utils.ACTION_BACKSPACE, utils.ACTION_NAV_BACK):
             self.stop()
         elif action == utils.ACTION_SELECT_ITEM:
-            xbmc.executebuiltin("RunAddon({0})".format(utils.addon_info('id')))
-            self.stop()
+            self.run()
+            
+    def run(self):
+        xbmc.executebuiltin("RunAddon({0})".format(utils.addon_info('id')))
+        self.stop()
             
     def stop(self):
         utils.log_normal("Closing preview")
