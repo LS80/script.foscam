@@ -1,3 +1,6 @@
+0.0.11
+ - Made it less likely to miss a motion event.
+
 0.0.10
  - The main view can now be activated on touch screens by touching the preview window.
 
