@@ -13,7 +13,7 @@
    height="32px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.3.1 r9886"
    inkscape:export-filename="/home/lee/addons/script.foscam/resources/media/close.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
@@ -34,8 +34,8 @@
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
-     inkscape:window-width="1600"
-     inkscape:window-height="841"
+     inkscape:window-width="1440"
+     inkscape:window-height="2501"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1" />
@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -65,11 +65,6 @@
        sodipodi:ry="13.702883"
        d="m 35.993748,21.328169 a 13.702883,13.702883 0 1 1 -27.4057658,0 13.702883,13.702883 0 1 1 27.4057658,0 z"
        transform="matrix(1.0946612,0,0,1.0946612,-8.400945,-7.3471189)" />
-    <path
-       style="fill:#808080;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:0.38039216;stroke-dasharray:none"
-       d="m -19.35546,15.278579 c -0.389062,0 -0.782233,0.168191 -1.080352,0.465947 -0.596241,0.595511 -0.596241,1.538034 0,2.133547 l 5.303554,5.321603 -5.303554,5.297081 c -0.596241,0.595512 -0.596241,1.562559 0,2.15807 0.596238,0.595512 1.539913,0.595512 2.136152,0 l 5.328109,-5.321604 5.3035518,5.321604 c 0.59624,0.595512 1.564468,0.595512 2.160708,0 0.596239,-0.595511 0.596239,-1.562558 0,-2.15807 l -5.3281058,-5.297081 5.3281058,-5.321603 c 0.596239,-0.595513 0.596239,-1.538036 0,-2.133547 -0.59624,-0.595512 -1.564468,-0.595512 -2.160707,0 l -5.3035528,5.297081 -5.328109,-5.297081 c -0.298119,-0.297756 -0.666737,-0.465947 -1.0558,-0.465947 z"
-       id="rect3778"
-       inkscape:connector-curvature="0" />
     <rect
        style="fill:#b3b3b3;fill-opacity:1;stroke:none"
        id="rect3767"

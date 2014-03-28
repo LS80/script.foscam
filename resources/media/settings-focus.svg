@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- The icon can be used freely in both personal and commercial projects with no attribution required, but always appreciated. 
+You may NOT sub-license, resell, rent, redistribute or otherwise transfer the icon without express written permission from iconmonstr.com -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   x="0px"
+   y="0px"
+   width="32.000038"
+   height="31.999247"
+   viewBox="0 0 32.000038 31.999247"
+   enable-background="new 0 0 512 512"
+   xml:space="preserve"
+   id="svg2"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="settings-focus.svg"><metadata
+   id="metadata9"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
+   id="defs7" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1326"
+   inkscape:window-height="930"
+   id="namedview5"
+   showgrid="false"
+   inkscape:zoom="16"
+   inkscape:cx="32.348021"
+   inkscape:cy="18.218969"
+   inkscape:window-x="53"
+   inkscape:window-y="1080"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="svg2"
+   fit-margin-top="0"
+   fit-margin-left="0"
+   fit-margin-right="0"
+   fit-margin-bottom="0" />
+
+
+
+<path
+   inkscape:connector-curvature="0"
+   style="fill:#4bbb00;fill-opacity:1;stroke:none"
+   d="M 12.334878,5e-5 11.597109,2.08863 C 11.315714,2.88468 10.711911,3.52494 9.936343,3.8486 9.158765,4.17307 8.282408,4.15226 7.52211,3.7886 L 5.531702,2.83753 2.819221,5.56753 3.764194,7.5708 c 0.361262,0.76461 0.381832,1.64753 0.05965,2.42983 -0.32158,0.78089 -0.957129,1.38819 -1.748671,1.6715 L 0,12.41463 l 0,3.86751 2.075173,0.74253 c 0.790939,0.28322 1.427091,0.89102 1.748671,1.6715 0.322383,0.7826 0.301512,1.66462 -0.05965,2.42983 l -0.944973,2.00327 2.712481,2.73001 1.990408,-0.94792 c 0.759695,-0.3636 1.636956,-0.38746 2.414233,-0.0632 0.77597,0.32385 1.379271,0.96311 1.660766,1.75996 l 0.737769,2.08859 3.842681,0 0.731491,-2.07595 c 0.283705,-0.80353 0.894164,-1.44837 1.676463,-1.77576 0.585745,-0.24524 1.230761,-0.29279 1.836575,-0.14219 l -3.412576,-3.43463 c -0.851756,0.34377 -1.779512,0.53716 -2.753293,0.53716 -4.0912,0 -7.40909,-3.33962 -7.40909,-7.45697 0,-4.11763 3.31789,-7.45696 7.40909,-7.45696 4.090916,0 7.409089,3.33933 7.409089,7.45696 0,0.97509 -0.189157,1.90475 -0.527426,2.75845 l 3.403158,3.42514 c -0.14256,-0.60656 -0.09354,-1.25071 0.147554,-1.8358 0.322182,-0.78179 0.959464,-1.39104 1.75181,-1.67466 l 2.072033,-0.73937 0,-3.86751 -2.075173,-0.74254 c -0.79114,-0.28301 -1.427292,-0.89082 -1.74867,-1.6715 -0.322585,-0.7824 -0.301513,-1.66482 0.05965,-2.42983 l 0.944973,-2.00327 -2.71248,-2.73 -1.990408,0.95107 c -0.759696,0.3636 -1.637158,0.3843 -2.414233,0.06 C 17.799823,3.52469 17.196924,2.88544 16.915328,2.08858 L 16.177559,0 12.334878,0 z"
+   id="path2994"
+   inkscape:export-filename="/scratch/zero/script.foscam/resources/media/settings-focus.png"
+   inkscape:export-xdpi="9.0175858"
+   inkscape:export-ydpi="9.0175858" /><path
+   inkscape:connector-curvature="0"
+   style="fill:#4bbb00;fill-opacity:1;fill-rule:evenodd;stroke:none"
+   d="m 14.267881,8.59571 c 0,0 -2.465186,0.15229 -2.819221,0.28122 -0.354038,0.12894 -0.910439,0.59403 -0.910439,0.59403 0,0 3.381684,1.77305 3.50676,2.00959 0.12508,0.23653 -0.160112,0.78361 -0.160112,0.78361 L 12.233521,15.24695 8.456769,13.2342 c 0,0 -0.105762,0.23947 -0.05023,0.65722 0.0745,0.56049 0.338514,1.38816 0.521148,1.86424 0.314216,0.8191 1.562216,2.52941 1.597977,2.57834 l -0.0031,0.006 c 0,0 0.01408,0.008 0.0157,0.009 0.04508,0.028 0.687587,0.4266 0.831953,0.45184 0.149534,0.0261 1.1302,-0.14851 1.1302,-0.14851 0,0 1.910884,0.30874 2.420512,0.44552 0.509626,0.13679 1.651165,0.58797 2.134822,0.87525 0.483658,0.28728 0.819398,0.60667 0.819395,0.60667 l 4.36069,4.38254 6.60853,6.80922 c 0,0 1.593665,0.70526 2.48958,-0.36653 1.355237,-1.62127 0.222903,-2.93855 0.222901,-2.93855 l -6.730969,-6.24678 -0.210343,-0.19591 -1.739252,-1.63358 c 0.09002,0.0277 -2.289431,-2.12683 -2.533532,-2.36032 C 20.09865,17.79638 18.882514,15.51951 18.543849,15.07868 18.205182,14.63784 17.465885,11.41865 17.372835,11.2712 17.279785,11.12375 16.912324,9.54732 16.729249,9.3722 16.546174,9.19709 16.006095,8.90942 15.586491,8.80029 15.166883,8.69118 14.267919,8.59491 14.267919,8.59491 z"
+   id="path3840"
+   inkscape:export-filename="/scratch/zero/script.foscam/resources/media/settings-focus.png"
+   inkscape:export-xdpi="9.0175858"
+   inkscape:export-ydpi="9.0175858" /></svg>

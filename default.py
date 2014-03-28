@@ -108,7 +108,7 @@ class CameraControlDialog(xbmcgui.WindowDialog):
 
         self.up_button.setNavigation(self.mirror_button, self.down_button, self.left_button, self.right_button)
         self.left_button.setNavigation(self.up_button, self.down_button, self.right_button, self.right_button)
-        self.right_button.setNavigation(self.up_button, self.down_button, self.left_button, self.close_button)
+        self.right_button.setNavigation(self.up_button, self.down_button, self.left_button, self.settings_button)
         self.down_button.setNavigation(self.up_button, self.flip_button, self.left_button, self.right_button)
 
         self.flip_button.controlUp(self.down_button)
@@ -118,7 +118,10 @@ class CameraControlDialog(xbmcgui.WindowDialog):
         self.mirror_button.controlUp(self.flip_button)
         self.mirror_button.controlRight(self.close_button)
         
-        self.close_button.controlLeft(self.right_button)
+        self.settings_button.controlLeft(self.right_button)
+        self.settings_button.controlRight(self.close_button)
+        
+        self.close_button.controlLeft(self.settings_button)
 
     def getControl(self, control):
         return next(button for button in self.buttons if button == control)
