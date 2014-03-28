@@ -35,6 +35,9 @@
   <string id="32030">Bottom left</string>
   <string id="32031">Top right</string>
   <string id="32032">Top left</string>
+
+  <string id="32040">Camera settings</string>
+  <string id="32041">Preview settings</string>
   
   <string id="32051">Advanced</string>
   <string id="32052">Debug logging</string>
