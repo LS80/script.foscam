@@ -1,3 +1,9 @@
+0.0.12
+ - Fixed a script error when add-on is launched while a file is playing.
+ - Added a settings button to the main video view.
+ - Scale the preview close button the same way as the preview window.
+ - Reorganised the motion settings into groups.
+
 0.0.11
  - Made it less likely to miss a motion event.
 
