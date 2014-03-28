@@ -1,5 +1,4 @@
 import os
-import time
 
 import xbmc
 import xbmcgui
@@ -8,10 +7,6 @@ import xbmcaddon
 from resources.lib import foscam
 from resources.lib import utils
 from resources.lib import gui
-
-
-gui.Button.WIDTH = 16
-gui.Button.HEIGHT = 16
 
 
 class Main(object):
@@ -23,7 +18,7 @@ class Main(object):
 
         self.apply_settings()
 
-        self.monitor = MyMonitor(updated_settings_callback=self.apply_settings)
+        self.monitor = utils.Monitor(updated_settings_callback=self.apply_settings)
         
         self.path = os.path.join(xbmc.translatePath(utils.addon_info('profile')), "snapshots")
         try:
@@ -101,8 +96,9 @@ class Main(object):
             if alarm == 2:
                 self.motion_detected = True
                 utils.log_normal("Motion detected")
-                preview = CameraPreview(self.duration, self.snapshot_interval, self.path,
-                                        self.scaling, self.position)
+                preview = gui.CameraPreview(self.duration, self.snapshot_interval, self.path,
+                                            self.scaling, self.position,
+                                            foscam.CameraDataCommand('snapPicture2').data)
                 preview.show()
                 self.duration_shown = preview.start()
                 del(preview)
@@ -110,134 +106,6 @@ class Main(object):
                 self.motion_detected = False
                 utils.log_verbose("No motion detected")
 
-
-class SnapShot(object):
-    def __init__(self, path, interval):
-        self.time = time.time()
-
-        self.interval = interval
-        self.filename = os.path.join(path, "{0}.jpg".format(self.time))
-        
-        with open(self.filename, 'wb') as output:
-            utils.log_verbose("Snapshot {0}".format(self.filename)) 
-            output.write(foscam.CameraDataCommand('snapPicture2').data())      
-        
-    def __enter__(self):
-        return self.filename
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        current_time = time.time()
-        elapsed = current_time - self.time
-        utils.log_verbose("Retrieving snapshot took {0:.2f} seconds".format(elapsed))
-        remaining = int(self.interval - elapsed*1000)
-        sleep = max(200, remaining)
-        utils.log_verbose("Sleeping for {0} milliseconds".format(sleep))
-        xbmc.sleep(sleep)
-        
-        try:
-            os.remove(self.filename)
-        except:
-            pass
-        else:
-            utils.log_verbose("Deleted {0}".format(self.filename))
-
-
-class CameraPreview(xbmcgui.WindowDialog):
-    def __init__(self, duration, interval, path, scaling, position):
-        utils.log_normal("Showing preview")
-        
-        self.buttons = []
-        
-        self.duration = duration
-        self.interval = interval
-        self.path = path
-        
-        self.setProperty('zorder', "99")
-        
-        WIDTH = 320
-        HEIGHT = 180
-
-        width = int(WIDTH * scaling)
-        height = int(HEIGHT * scaling)
-
-        if "bottom" in position:
-            y = 720 - height
-        else:
-            y = 0
-
-        if "left" in position:
-            x = 0
-            start = - width
-        else:
-            x = 1280 - width
-            start = width
-
-        animations = [('WindowOpen',
-                       "effect=slide start={0:d} time=2000 tween=cubic easing=out".format(start)),
-                      ('WindowClose',
-                       "effect=slide end={0:d} time=2000 tween=cubic easing=in".format(start))]
-
-        self.closing = False
-
-        with SnapShot(self.path, self.interval) as snapshot:
-            self.image = xbmcgui.ControlImage(x, y, width, height, snapshot)
-            self.addControl(self.image)
-            self.image.setAnimations(animations)
-
-            self.close_button = gui.Button(self, 'close', x + width - gui.Button.WIDTH - 10, y + 10)
-            self.addControl(self.close_button)
-            self.close_button.setAnimations(animations)
-            
-            trans = utils.TEXTURE_FMT.format('trans')
-            self.select_button = xbmcgui.ControlButton(x, y, width, height, "", trans, trans)
-            self.addControl(self.select_button)
-            self.select_button.setAnimations(animations)
-
-    def start(self):
-        start_time = time.time()
-        current_time = start_time
-        while (current_time - start_time) <= self.duration:
-            with SnapShot(self.path, self.interval) as snapshot:
-                self.image.setImage(snapshot, useCache=False)
-
-            if self.closing:
-                break
-            
-            current_time = time.time()
-        self.close()
-        return int(current_time - start_time)
-
-    def onControl(self, control):
-        if control == self.close_button:
-            self.stop()
-        elif control == self.select_button:
-            self.run()
-            
-    def onAction(self, action):
-        if action in (utils.ACTION_PREVIOUS_MENU, utils.ACTION_BACKSPACE, utils.ACTION_NAV_BACK):
-            self.stop()
-        elif action == utils.ACTION_SELECT_ITEM:
-            self.run()
-            
-    def run(self):
-        xbmc.executebuiltin("RunAddon({0})".format(utils.addon_info('id')))
-        self.stop()
-            
-    def stop(self):
-        utils.log_normal("Closing preview")
-        self.removeControl(self.close_button)
-        self.closing = True
-        self.close()
-
-
-class MyMonitor(xbmc.Monitor):
-    def __init__(self, updated_settings_callback):
-        xbmc.Monitor.__init__(self)
-        self.updated_settings_callback = updated_settings_callback
-
-    def onSettingsChanged(self):
-        self.updated_settings_callback()
-    
 
 if __name__ == "__main__":
     Main()

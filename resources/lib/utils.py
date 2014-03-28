@@ -1,4 +1,5 @@
 import os
+import time
 
 import xbmc
 import xbmcaddon
@@ -61,19 +62,61 @@ def open_settings():
     __addon__.openSettings()
 
 
+class SnapShot(object):
+    def __init__(self, path, interval, get_data):
+        self.time = time.time()
+
+        self.interval = interval
+        self.filename = os.path.join(path, "{0}.jpg".format(self.time))
+
+        self.get_data = get_data
+        
+        with open(self.filename, 'wb') as output:
+            log_verbose("Snapshot {0}".format(self.filename)) 
+            output.write(self.get_data())  
+        
+    def __enter__(self):
+        return self.filename
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        current_time = time.time()
+        elapsed = current_time - self.time
+        log_verbose("Retrieving snapshot took {0:.2f} seconds".format(elapsed))
+        remaining = int(self.interval - elapsed*1000)
+        sleep = max(200, remaining)
+        log_verbose("Sleeping for {0} milliseconds".format(sleep))
+        xbmc.sleep(sleep)
+        
+        try:
+            os.remove(self.filename)
+        except:
+            pass
+        else:
+            log_verbose("Deleted {0}".format(self.filename))
+
+
+class Monitor(xbmc.Monitor):
+    def __init__(self, updated_settings_callback):
+        xbmc.Monitor.__init__(self)
+        self.updated_settings_callback = updated_settings_callback
+
+    def onSettingsChanged(self):
+        self.updated_settings_callback()
+
+
 class StopResumePlayer(xbmc.Player):
     def maybe_stop_current(self):
         if self.isPlaying():
             self.seek_time = self.getTime()
             self.previous_file = self.getPlayingFile()
             self.stop()
-            utils.log_normal("Stopped {0}".format(self.previous_file))
+            log_normal("Stopped {0}".format(self.previous_file))
         else:
             self.previous_file = None
 
     def maybe_resume_previous(self):
         if self.previous_file is not None:
-            utils.log_normal("Resuming {0}".format(self.previous_file))
+            log_normal("Resuming {0}".format(self.previous_file))
             self.play(self.previous_file)
             xbmc.sleep(1000) # wait for file to actually play before we can seek
             self.seekTime(self.seek_time - 2.)
