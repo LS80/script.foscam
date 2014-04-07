@@ -53,7 +53,10 @@ def get_bool_setting(ident):
     return get_setting(ident) == "true"
 
 def get_int_setting(ident):
-    return int(get_setting(ident))
+    try:
+        return int(get_setting(ident))
+    except ValueError:
+        return None
 
 def get_float_setting(ident):
     return float(get_setting(ident))
