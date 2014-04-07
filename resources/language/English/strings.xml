@@ -8,10 +8,11 @@
   <string id="32004">Username</string>
   <string id="32005">Password</string>
 
-  <string id="32011">Motion</string>
-  <string id="32012">Enable motion detection preview</string>
+  <string id="32011">Alarms</string>
+  <string id="32012">Enable motion detection alarm preview</string>
+  <string id="32061">Enable sound detection alarm preview</string>
   
-  <string id="32013">Motion check interval (seconds)</string>
+  <string id="32013">Alarm check interval (seconds)</string>
   <string id="32014">Sensitivity</string>
   <string id="32015">Low</string>
   <string id="32016">Medium</string>
@@ -36,8 +37,7 @@
   <string id="32031">Top right</string>
   <string id="32032">Top left</string>
 
-  <string id="32040">Camera settings</string>
-  <string id="32041">Preview settings</string>
+  <string id="32041">Preview</string>
   
   <string id="32051">Advanced</string>
   <string id="32052">Debug logging</string>

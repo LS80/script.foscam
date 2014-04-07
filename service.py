@@ -13,7 +13,7 @@ class Main(object):
     def __init__(self):
         utils.log_normal("Starting service")
         self.video_url = ""
-        self.motion_detected = False
+        self.alarm_active = False
         self.duration_shown = 0
 
         self.apply_settings()
@@ -27,10 +27,11 @@ class Main(object):
             pass
 
         while not xbmc.abortRequested:
-            self.motion_check()
+            if self.configured:
+                self.alarm_check()
 
-            if self.motion_detected:
-                sleep = foscam.MOTION_DURATION - self.duration_shown + self.trigger_interval
+            if self.alarm_active:
+                sleep = foscam.ALARM_DURATION - self.duration_shown + self.trigger_interval
             else:
                 sleep = self.check_interval
             utils.log_verbose("Sleeping for {0} seconds".format(sleep))
@@ -43,13 +44,23 @@ class Main(object):
         utils.log_normal("Applying settings")
 
         self.motion_enable = utils.get_bool_setting('motion_enable')
+        self.sound_enable = utils.get_bool_setting('sound_enable')
 
         self.check_interval = utils.get_int_setting('check_interval')
         self.duration = utils.get_int_setting('preview_duration')
         self.snapshot_interval = utils.get_int_setting('snapshot_interval')
-        self.trigger_interval = utils.get_int_setting('trigger_interval')
         self.scaling = utils.get_float_setting('preview_scaling')
         self.position = utils.get_setting('preview_position').lower()
+
+        motion_trigger_interval = utils.get_int_setting('motion_trigger_interval')
+        sound_trigger_interval = utils.get_int_setting('sound_trigger_interval')
+        
+        if self.motion_enable and self.sound_enable:
+            self.trigger_interval = min(motion_trigger_interval, sound_trigger_interval)
+        elif self.motion_enable:
+            self.trigger_interval = motion_trigger_interval
+        elif self.sound_enable:
+            self.trigger_interval = sound_trigger_interval
 
         user = utils.get_setting('username')
         password = utils.get_setting('password')
@@ -66,14 +77,26 @@ class Main(object):
         if not success:
             utils.log_normal(msg)
             self.configured = False
-        elif success and self.motion_enable:
+        else:
             self.video_url = foscam.video_url(user, password, host, port)
-
-            command = foscam.SetCommand('setMotionDetectConfig')
-            command['isEnable'] = True
-            command['sensitivity'] = utils.get_int_setting('motion_sensitivity')
-            command['triggerInterval'] = self.trigger_interval
-            self.send_command(command)
+            
+            if self.motion_enable:
+                command = foscam.SetCommand('setMotionDetectConfig')
+                command['isEnable'] = True
+                command['sensitivity'] = utils.get_int_setting('motion_sensitivity')
+                command['triggerInterval'] = motion_trigger_interval
+                self.send_command(command)
+                
+            if self.sound_enable:
+                command = foscam.SetCommand('setAudioAlarmConfig')
+                command['isEnable'] = True
+                command['sensitivity'] = utils.get_int_setting('sound_sensitivity')
+                command['triggerInterval'] = sound_trigger_interval
+                
+                for iday in range(7):
+                    command['schedule{0:d}'.format(iday)] = 2**48 - 1
+                
+                self.send_command(command)
                 
             command = foscam.SetCommand('setSnapConfig')
             command['snapPicQuality'] = utils.get_int_setting('snapshot_quality')
@@ -86,25 +109,33 @@ class Main(object):
             msg = u"{0}: {1}".format(utils.get_string(32104), response.message)
             utils.notify(msg)
 
-    def motion_check(self):
-        if self.motion_enable and self.configured:
+    def alarm_check(self):
+        if self.motion_enable or self.sound_enable:
             player = xbmc.Player()
             if player.isPlaying() and player.getPlayingFile() == self.video_url:
                 return
 
-            alarm = foscam.CameraCommand('getDevState').get('motionDetectAlarm')
-            if alarm == 2:
-                self.motion_detected = True
-                utils.log_normal("Motion detected")
+            self.alarm_active = False
+            dev_state = foscam.CameraCommand('getDevState').send()
+
+            for alarm, enabled in (('motionDetect', self.motion_enable),
+                                   ('sound', self.sound_enable)):
+                if enabled:
+                    param = "{0}Alarm".format(alarm)
+                    alarm_status = dev_state[param]
+                    utils.log_verbose("{0:s} = {1:d}".format(param, alarm_status))
+                    if alarm_status == 2:
+                        self.alarm_active = True
+                        utils.log_normal("Alarm detected")
+                        break
+
+            if self.alarm_active:
                 preview = gui.CameraPreview(self.duration, self.snapshot_interval, self.path,
                                             self.scaling, self.position,
                                             foscam.CameraDataCommand('snapPicture2').data)
                 preview.show()
                 self.duration_shown = preview.start()
                 del(preview)
-            elif alarm < 2:
-                self.motion_detected = False
-                utils.log_verbose("No motion detected")
 
 
 if __name__ == "__main__":
