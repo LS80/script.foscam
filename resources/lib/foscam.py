@@ -6,7 +6,7 @@ import xbmc
 import utils
 
 
-MOTION_DURATION = 60
+ALARM_DURATION = 60
 
 def video_url(user, password, host, port):
     return "rtsp://{0}:{1}@{2}:{3}/videoMain".format(user, password, host, port)
