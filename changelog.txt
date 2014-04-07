@@ -1,3 +1,6 @@
+0.0.13
+ - Added sound detection for activating the preview window.
+
 0.0.12
  - Fixed a script error when add-on is launched while a file is playing.
  - Added a settings button to the main video view.
