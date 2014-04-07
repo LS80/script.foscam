@@ -53,19 +53,21 @@ class MirrorFlipButton(gui.ToggleButton):
 
 
 class CameraControlDialog(xbmcgui.WindowDialog):
-    def __init__(self):
+    def __enter__(self):
+        return self
+    
+    def start(self):
         utils.log_normal("Starting main view")
         self.playVideo()
         self.setupUi()
-
-    def __enter__(self):
+        
         mirror_flip = foscam.CameraCommand('getMirrorAndFlipSetting')
         mirror, flip = mirror_flip.send().values()
 
         self.mirror_button.setSelected(mirror)
         self.flip_button.setSelected(flip)
 
-        return self
+        self.doModal()
 
     def playVideo(self):
         self.player = utils.StopResumePlayer()
@@ -156,7 +158,7 @@ class CameraControlDialog(xbmcgui.WindowDialog):
         self.stop()
 
 with CameraControlDialog() as camera:
-    camera.doModal()
+    camera.start()
 
             
             
