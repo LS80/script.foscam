@@ -15,10 +15,13 @@ class Main(object):
         self.video_url = ""
         self.alarm_active = False
         self.duration_shown = 0
+        
+        self.configured = self.apply_basic_settings()
+        if self.configured:
+            self.init_settings()
+            self.apply_other_settings()
 
-        self.apply_settings()
-
-        self.monitor = utils.Monitor(updated_settings_callback=self.apply_settings)
+        self.monitor = utils.Monitor(updated_settings_callback=self.settings_changed)
         
         self.path = os.path.join(xbmc.translatePath(utils.addon_info('profile')), "snapshots")
         try:
@@ -39,10 +42,43 @@ class Main(object):
             for i in range(sleep):
                 if not xbmc.abortRequested:
                     xbmc.sleep(1000)
+    
+    def init_settings(self):
+        utils.log_normal("Initialising settings from the camera")
 
-    def apply_settings(self):
+        response = foscam.CameraCommand('getMotionDetectConfig').send()
+        utils.set_setting('motion_sensitivity', str(response['sensitivity']))
+        utils.set_setting('motion_trigger_interval', str(response['triggerInterval']))
+        
+        response = foscam.CameraCommand('getAudioAlarmConfig').send()
+        utils.set_setting('sound_sensitivity', str(response['sensitivity']))
+        utils.set_setting('sound_trigger_interval', str(response['triggerInterval']))
+    
+    def settings_changed(self):
         utils.log_normal("Applying settings")
+        self.configured = self.apply_basic_settings()
+        if self.configured:
+            self.apply_other_settings()
+        
+    def apply_basic_settings(self):
+        user = utils.get_setting('username')
+        password = utils.get_setting('password')
+        host = utils.get_setting('host')
+        port = utils.get_int_setting('port')
 
+        if not host:
+            utils.log_normal("No host specified")
+            return False
+
+        success, msg = foscam.CameraCommand.set_url_components(host, port, user, password)
+        if not success:
+            utils.log_error(msg)
+            return False
+
+        self.video_url = foscam.video_url(user, password, host, port)
+        return True
+
+    def apply_other_settings(self):            
         self.motion_enable = utils.get_bool_setting('motion_enable')
         self.sound_enable = utils.get_bool_setting('sound_enable')
 
@@ -61,47 +97,29 @@ class Main(object):
             self.trigger_interval = motion_trigger_interval
         elif self.sound_enable:
             self.trigger_interval = sound_trigger_interval
-
-        user = utils.get_setting('username')
-        password = utils.get_setting('password')
-        host = utils.get_setting('host')
-        port = utils.get_int_setting('port')
-
-        self.configured = True
-        if not host:
-            utils.log_normal("No host specified")
-            self.configured = False
-            return
-
-        success, msg = foscam.CameraCommand.set_url_components(host, port, user, password)  
-        if not success:
-            utils.log_normal(msg)
-            self.configured = False
-        else:
-            self.video_url = foscam.video_url(user, password, host, port)
-            
-            if self.motion_enable:
-                command = foscam.SetCommand('setMotionDetectConfig')
-                command['isEnable'] = True
-                command['sensitivity'] = utils.get_int_setting('motion_sensitivity')
-                command['triggerInterval'] = motion_trigger_interval
-                self.send_command(command)
-                
-            if self.sound_enable:
-                command = foscam.SetCommand('setAudioAlarmConfig')
-                command['isEnable'] = True
-                command['sensitivity'] = utils.get_int_setting('sound_sensitivity')
-                command['triggerInterval'] = sound_trigger_interval
-                
-                for iday in range(7):
-                    command['schedule{0:d}'.format(iday)] = 2**48 - 1
-                
-                self.send_command(command)
-                
-            command = foscam.SetCommand('setSnapConfig')
-            command['snapPicQuality'] = utils.get_int_setting('snapshot_quality')
-            response = command.send()
+        
+        if self.motion_enable:
+            command = foscam.SetCommand('setMotionDetectConfig')
+            command['isEnable'] = True
+            command['sensitivity'] = utils.get_int_setting('motion_sensitivity')
+            command['triggerInterval'] = motion_trigger_interval
             self.send_command(command)
+            
+        if self.sound_enable:
+            command = foscam.SetCommand('setAudioAlarmConfig')
+            command['isEnable'] = True
+            command['sensitivity'] = utils.get_int_setting('sound_sensitivity')
+            command['triggerInterval'] = sound_trigger_interval
+            
+            for iday in range(7):
+                command['schedule{0:d}'.format(iday)] = 2**48 - 1
+            
+            self.send_command(command)
+            
+        command = foscam.SetCommand('setSnapConfig')
+        command['snapPicQuality'] = utils.get_int_setting('snapshot_quality')
+        response = command.send()
+        self.send_command(command)
             
     def send_command(self, command):
         response = command.send()

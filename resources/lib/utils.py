@@ -61,6 +61,9 @@ def get_int_setting(ident):
 def get_float_setting(ident):
     return float(get_setting(ident))
 
+def set_setting(ident, value):
+    __addon__.setSetting(ident, value)
+
 def open_settings():
     __addon__.openSettings()
 
