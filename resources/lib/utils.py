@@ -64,7 +64,9 @@ def get_float_setting(ident):
 def set_setting(ident, value):
     __addon__.setSetting(ident, value)
 
-def open_settings():
+def open_settings(callback=None):
+    if callback is not None:
+        callback()
     __addon__.openSettings()
 
 

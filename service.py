@@ -53,6 +53,9 @@ class Main(object):
         response = foscam.CameraCommand('getAudioAlarmConfig').send()
         utils.set_setting('sound_sensitivity', str(response['sensitivity']))
         utils.set_setting('sound_trigger_interval', str(response['triggerInterval']))
+
+        response = foscam.CameraCommand('getSnapConfig').send()
+        utils.set_setting('snapshot_quality', str(response['snapPicQuality']))
     
     def settings_changed(self):
         utils.log_normal("Applying settings")
