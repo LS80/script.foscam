@@ -1,15 +1,13 @@
+import time
+import urllib
 import xml.etree.ElementTree as ET
 
 import requests2 as requests
-import xbmc
 
 import utils
 
 
 ALARM_DURATION = 60
-
-def video_url(user, password, host, port):
-    return "rtsp://{0}:{1}@{2}:{3}/videoMain".format(user, password, host, port)
 
 
 class CameraXMLResponse(object):
@@ -60,112 +58,107 @@ class CameraXMLResponse(object):
         return self.RESULT_MSG[self._result_value]
 
 
-class CameraCommand(object):
-    ''' Class to handle the sending of the CGI request and the return of a response object '''
+class SetConfigCommand(object):
+    def __init__(self, camera, cmd):
+        self.camera = camera
+        self.cmd = cmd
+        
+        get_cmd = self.cmd.replace("set", "get")
+        self._config = dict(self.camera.send_command(get_cmd).items())
 
-    URL_FMT = None
-    
-    def __init__(self, cmd):
-        if self.URL_FMT is None:
-            utils.log_error("Camera URL is not set")
+    def __setitem__(self, key, value):
+        self._config[key] = value
 
-        self.cmd_url = self.URL_FMT.format(cmd)
+    def send(self):
+        return self.camera.send_command(self.cmd, self._config)
 
-    @classmethod
-    def set_url_components(cls, host, port, user, password):
-        cls.host = host
-        cls.port = port
-        cls.user = user
-        cls.password = password
 
-        cls.set_url_fmt()
+class Camera(object):
+    def __init__(self, host, port, user, password):
+        self._url_fmt = "http://{0}:{1}/cgi-bin/CGIProxy.fcgi?cmd={{0}}&usr={2}&pwd={3}".format(host,
+                                                                                                port,
+                                                                                                user,
+                                                                                                password)
 
-        response = cls('getDevState').send()
+        self._video_url = "rtsp://{0}:{1}@{2}:{3}/videoMain".format(user, password, host, port)
+
+    @property
+    def video_url(self):
+        return self._video_url
+
+    def send_command(self, cmd, params=None, data=False):
+        url = self._url_fmt.format(cmd)
+        if params is not None:
+            url += "&" + urllib.urlencode(params)
+
+        utils.log_verbose(url)
+        try:
+            response = requests.get(url)
+        except (requests.RequestException) as e:
+            utils.log_error(str(e))
+            return False
+        else:
+            if not response:
+                return False
+            elif data:
+                return response.content
+            else:
+                utils.log_verbose(response)
+                xml_resp = CameraXMLResponse(response)
+                utils.log_verbose(xml_resp)
+                if not xml_resp:
+                    utils.log_error(xml_resp.message)
+                return xml_resp
+
+    def test(self):
+        response = self.send_command("getDevState")
         if response:
             msg = response.message
         else:
             msg = "Error connecting to camera."
         return bool(response), msg
+    
+    def move(self, direction):
+        self.send_command("ptzMove" + direction.capitalize())
+        time.sleep(0.5)
+        self.send_command("ptzStopRun")
+
+    def get_mirror_and_flip(self):
+        return self.send_command("getMirrorAndFlipSetting").values()
+
+    def toggle_mirror_flip(self, action, enable):
+        return self.send_command(action.lower() + "Video", {"is" + action.capitalize(): int(enable)})
+
+    def set_ir_on(self):
+        return self.send_command('openInfraLed')
+
+    def set_ir_off(self):
+        return self.send_command('closeInfraLed')
+
+    def get_motion_detect_config(self):
+        return self.send_command('getMotionDetectConfig')
+
+    def get_sound_detect_config(self):
+        return self.send_command('getAudioAlarmConfig')
+    
+    def get_device_state(self):
+        return self.send_command('getDevState')
+
+    def get_snapshot_config(self):
+        return self.send_command('getSnapConfig')
+
+    def set_motion_detect_config(self):
+        return SetConfigCommand(self, 'setMotionDetectConfig')
+    
+    def set_sound_detect_config(self):
+        return SetConfigCommand(self, 'setAudioAlarmConfig')
+    
+    def set_snapshot_config(self):
+        return SetConfigCommand(self, 'setSnapConfig')
+    
+    def get_snapshot(self):
+        return self.send_command('snapPicture2', data=True)
         
-    @classmethod
-    def set_url_fmt(cls):
-        cls.URL_FMT = "http://{0}:{1}/cgi-bin/CGIProxy.fcgi?cmd={{0}}&usr={2}&pwd={3}".format(cls.host,
-                                                                                              cls.port,
-                                                                                              cls.user,
-                                                                                              cls.password)
-    def send(self):
-        utils.log_verbose(self.cmd_url)
-        try:
-            response = requests.get(self.cmd_url)
-        except (requests.RequestException) as e:
-            utils.log_error(str(e))
-            return False
-        else:
-            return self._response(response)
-            
-    def _response(self, response):
-        xml_resp = CameraXMLResponse(response)
-        utils.log_verbose(xml_resp)
-        if not xml_resp:
-            utils.log_error(xml_resp.message)
-        return xml_resp
-
-    def get(self, element=None):
-        response = self.send()
-        if response:
-            return response[element]
-        else:
-            return False
-
-    def bytes(self):
-        return self.send().bytes()
-
-
-class CameraDataCommand(CameraCommand):
-    def _response(self, response):
-        return response.content
-
-    data = CameraCommand.send 
-
-
-class SetCommand(CameraCommand):
-    def __init__(self, cmd):
-        self.cmd = cmd
         
-        get_cmd = self.cmd.replace("set", "get")
-        command = CameraCommand(get_cmd)
-        
-        self._settings = dict(command.send().items())
-        
-    def __setitem__(self, key, value):
-        self._settings[key] = value
 
-    def send(self):
-        qs = "&".join(("{0}={1:d}".format(param, value) for param, value in self._settings.iteritems()))
-        
-        self.cmd_url = self.URL_FMT.format("{0}&{1}".format(self.cmd, qs))
-        return super(SetCommand, self).send()
-
-
-class ToggleCommand(CameraCommand):
-    def __init__(self, cmd, param):
-        cmd_fmt = "{0}&{1}={{0:d}}".format(cmd, param)
-        self.cmd_url_fmt = self.URL_FMT.format(cmd_fmt)
-
-    def set_enabled(self, enable):
-        self.cmd_url = self.cmd_url_fmt.format(enable)
-        return super(ToggleCommand, self).send()
-
-
-class MirrorFlipToggleCommand(ToggleCommand):
-    def __init__(self, action):
-        cmd = "{0}Video".format(action)
-        param = "is{0}".format(action.title())    
-        super(MirrorFlipToggleCommand, self).__init__(cmd, param)
-
-
-class CameraMoveCommand(CameraCommand):
-    def __init__(self, direction):
-        cmd = "ptzMove{0}".format(direction.title())
-        super(CameraMoveCommand, self).__init__(cmd)
 

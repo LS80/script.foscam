@@ -12,7 +12,6 @@ from resources.lib import gui
 class Main(object):
     def __init__(self):
         utils.log_normal("Starting service")
-        self.video_url = ""
         self.alarm_active = False
         self.duration_shown = 0
         
@@ -46,15 +45,15 @@ class Main(object):
     def init_settings(self):
         utils.log_normal("Initialising settings from the camera")
 
-        response = foscam.CameraCommand('getMotionDetectConfig').send()
+        response = self.camera.get_motion_detect_config()
         utils.set_setting('motion_sensitivity', str(response['sensitivity']))
         utils.set_setting('motion_trigger_interval', str(response['triggerInterval']))
         
-        response = foscam.CameraCommand('getAudioAlarmConfig').send()
+        response = self.camera.get_sound_detect_config()
         utils.set_setting('sound_sensitivity', str(response['sensitivity']))
         utils.set_setting('sound_trigger_interval', str(response['triggerInterval']))
 
-        response = foscam.CameraCommand('getSnapConfig').send()
+        response = self.camera.get_snapshot_config()
         utils.set_setting('snapshot_quality', str(response['snapPicQuality']))
     
     def settings_changed(self):
@@ -73,12 +72,12 @@ class Main(object):
             utils.log_normal("No host specified")
             return False
 
-        success, msg = foscam.CameraCommand.set_url_components(host, port, user, password)
+        self.camera = foscam.Camera(host, port, user, password)
+        success, msg = self.camera.test()
         if not success:
             utils.log_error(msg)
             return False
 
-        self.video_url = foscam.video_url(user, password, host, port)
         return True
 
     def apply_other_settings(self):            
@@ -102,26 +101,24 @@ class Main(object):
             self.trigger_interval = sound_trigger_interval
         
         if self.motion_enable:
-            command = foscam.SetCommand('setMotionDetectConfig')
-            command['isEnable'] = True
+            command = self.camera.set_motion_detect_config()
+            command['isEnable'] = 1
             command['sensitivity'] = utils.get_int_setting('motion_sensitivity')
             command['triggerInterval'] = motion_trigger_interval
             self.send_command(command)
             
         if self.sound_enable:
-            command = foscam.SetCommand('setAudioAlarmConfig')
-            command['isEnable'] = True
+            command = self.camera.set_sound_detect_config()
+            command['isEnable'] = 1
             command['sensitivity'] = utils.get_int_setting('sound_sensitivity')
             command['triggerInterval'] = sound_trigger_interval
             
             for iday in range(7):
                 command['schedule{0:d}'.format(iday)] = 2**48 - 1
-            
-            self.send_command(command)
-            
-        command = foscam.SetCommand('setSnapConfig')
+            self.send_command(command)            
+
+        command = self.camera.set_snapshot_config()
         command['snapPicQuality'] = utils.get_int_setting('snapshot_quality')
-        response = command.send()
         self.send_command(command)
             
     def send_command(self, command):
@@ -133,11 +130,11 @@ class Main(object):
     def alarm_check(self):
         if self.motion_enable or self.sound_enable:
             player = xbmc.Player()
-            if player.isPlaying() and player.getPlayingFile() == self.video_url:
+            if player.isPlaying() and player.getPlayingFile() == self.camera.video_url:
                 return
 
             self.alarm_active = False
-            dev_state = foscam.CameraCommand('getDevState').send()
+            dev_state = self.camera.get_device_state()
 
             for alarm, enabled in (('motionDetect', self.motion_enable),
                                    ('sound', self.sound_enable)):
@@ -153,7 +150,7 @@ class Main(object):
             if self.alarm_active:
                 preview = gui.CameraPreview(self.duration, self.snapshot_interval, self.path,
                                             self.scaling, self.position,
-                                            foscam.CameraDataCommand('snapPicture2').data)
+                                            self.camera.get_snapshot)
                 preview.show()
                 self.duration_shown = preview.start()
                 del(preview)

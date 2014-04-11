@@ -1,4 +1,5 @@
 import os
+from functools import partial
 
 import xbmc
 import xbmcaddon
@@ -14,9 +15,6 @@ password = utils.get_setting('password')
 host = utils.get_setting('host')
 port = utils.get_int_setting('port')
 
-# ir_on = foscam.CameraCommand('openInfraLed')
-# ir_off = foscam.CameraCommand('closeInfraLed')
-
 def error_dialog(msg):
     xbmcgui.Dialog().ok(utils.get_string(32000), msg, " ", utils.get_string(32102))
     utils.open_settings()
@@ -24,33 +22,28 @@ def error_dialog(msg):
 
 if not host:
     error_dialog(utils.get_string(32101))
-    
-success, msg = foscam.CameraCommand.set_url_components(host, port, user, password)  
+
+camera = foscam.Camera(host, port, user, password)
+success, msg = camera.test()
 if not success:
     error_dialog(msg)
 
 
-VIDEO_URL = foscam.video_url(user, password, host, port)
-PTZ_RUN_DURATION = 400
-
-
 class MoveButton(gui.Button):
-    end_cmd = foscam.CameraCommand('ptzStopRun')
+    def __init__(self, parent, direction, x, y):
+        self.cmd = partial(camera.move, direction)
 
-    def __init__(self, parent, action, x, y):
-        self.action = action.capitalize()
-        self.cmd = foscam.CameraMoveCommand(action)
-        
     def send_cmd(self, control=None):
-        self.cmd.send()
-        xbmc.sleep(PTZ_RUN_DURATION)
-        return self.end_cmd.send()
+        return self.cmd()
 
 
 class MirrorFlipButton(gui.ToggleButton):
     def __init__(self, parent, action, x, y):
-        self.cmd = foscam.MirrorFlipToggleCommand(action)
+        self.cmd = partial(camera.toggle_mirror_flip, action)
 
+    def send_cmd(self, control=None):
+        return self.cmd(control.isSelected())
+  
 
 class CameraControlDialog(xbmcgui.WindowDialog):
     def __enter__(self):
@@ -60,9 +53,8 @@ class CameraControlDialog(xbmcgui.WindowDialog):
         utils.log_normal("Starting main view")
         self.playVideo()
         self.setupUi()
-        
-        mirror_flip = foscam.CameraCommand('getMirrorAndFlipSetting')
-        mirror, flip = mirror_flip.send().values()
+
+        mirror, flip = camera.get_mirror_and_flip()
 
         self.mirror_button.setSelected(mirror)
         self.flip_button.setSelected(flip)
@@ -72,7 +64,7 @@ class CameraControlDialog(xbmcgui.WindowDialog):
     def playVideo(self):
         self.player = utils.StopResumePlayer()
         self.player.maybe_stop_current()
-        self.player.play(VIDEO_URL)
+        self.player.play(camera.video_url)
 
     def setupUi(self):
         Y_OFFSET = 100
@@ -157,8 +149,8 @@ class CameraControlDialog(xbmcgui.WindowDialog):
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
 
-with CameraControlDialog() as camera:
-    camera.start()
+with CameraControlDialog() as camera_dialog:
+    camera_dialog.start()
 
             
             
