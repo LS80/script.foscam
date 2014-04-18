@@ -62,7 +62,9 @@ class Main(object):
         if self.configured:
             self.apply_other_settings()
         
-    def apply_basic_settings(self):
+    def apply_basic_settings(self):        
+        self.check_interval = utils.get_int_setting('check_interval')
+
         user = utils.get_setting('username')
         password = utils.get_setting('password')
         host = utils.get_setting('host')
@@ -84,7 +86,6 @@ class Main(object):
         self.motion_enable = utils.get_bool_setting('motion_enable')
         self.sound_enable = utils.get_bool_setting('sound_enable')
 
-        self.check_interval = utils.get_int_setting('check_interval')
         self.duration = utils.get_int_setting('preview_duration')
         self.snapshot_interval = utils.get_int_setting('snapshot_interval')
         self.scaling = utils.get_float_setting('preview_scaling')
