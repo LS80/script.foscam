@@ -1,3 +1,6 @@
+0.0.15
+ - Fixed a service script error when the camera is not configured.
+
 0.0.14
  - Use the motion and sound detection settings from the camera when starting XBMC.
    If a setting such as the motion sensitivity is changed in the camera web interface
