@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 
 import xbmc
@@ -62,12 +63,16 @@ def get_float_setting(ident):
     return float(get_setting(ident))
 
 def set_setting(ident, value):
-    __addon__.setSetting(ident, value)
+    __addon__.setSetting(ident, str(value))
 
 def open_settings(callback=None):
     if callback is not None:
         callback()
     __addon__.openSettings()
+
+def error_dialog(msg):
+    xbmcgui.Dialog().ok(get_string(32000), msg, " ", get_string(32102))
+    open_settings()
 
 
 class SnapShot(object):

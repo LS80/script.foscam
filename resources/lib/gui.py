@@ -18,6 +18,10 @@ class Button(xbmcgui.ControlButton):
         parent.buttons.append(self)
         return self
 
+    def __init__(self, parent, action, x, y, scaling=1.0):
+        self.parent = parent
+        self.action = action
+
 
 class ToggleButton(xbmcgui.ControlRadioButton):
     WIDTH = 110
@@ -43,8 +47,9 @@ class ToggleButton(xbmcgui.ControlRadioButton):
         parent.buttons.append(self)
         return self
 
-    def send_cmd(self, control):
-        return self.cmd.set_enabled(control.isSelected())
+    def __init__(self, parent, action, x, y):
+        self.parent = parent
+        self.action = action
 
 
 class CameraPreview(xbmcgui.WindowDialog):

@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <category label="32001">
-        <setting label="32002" type="text" id="host"/>
-        <setting label="32003" type="number" id="port" default="88"/>
-        <setting label="32004" type="text" id="username" default="admin"/>
-        <setting label="32005" type="text" id="password" option="hidden" enable="!eq(-1,)"/>
+        <setting label="32006" type="labelenum" id="num_cameras" values="1|2|3|4" default="1"/>
+
+        <setting label="32007" type="lsep"/>
+        <setting label="32002" type="text" id="host_0"/>
+        <setting label="32003" type="number" id="port_0" default="88"/>
+        <setting label="32004" type="text" id="username_0" default="admin"/>
+        <setting label="32005" type="text" id="password_0" option="hidden" enable="!eq(-1,)"/>
+
+        <setting label="32008" type="lsep" visible="gt(-6,0)"/>
+        <setting label="32002" type="text" id="host_1" visible="gt(-7,0)"/>
+        <setting label="32003" type="number" id="port_1" default="88" visible="gt(-8,0)"/>
+        <setting label="32004" type="text" id="username_1" default="admin" visible="gt(-9,0)"/>
+        <setting label="32005" type="text" id="password_1" option="hidden" enable="!eq(-1,)" visible="gt(-10,0)"/>
+
+        <setting label="32009" type="lsep" visible="gt(-11,1)"/>
+        <setting label="32002" type="text" id="host_2" visible="gt(-12,1)"/>
+        <setting label="32003" type="number" id="port_2" default="88" visible="gt(-13,1)"/>
+        <setting label="32004" type="text" id="username_2" default="admin" visible="gt(-14,1)"/>
+        <setting label="32005" type="text" id="password_2" option="hidden" enable="!eq(-1,)" visible="gt(-15,1)"/>
+
+        <setting label="32010" type="lsep" visible="gt(-16,2)"/>
+        <setting label="32002" type="text" id="host_3" visible="gt(-17,2)"/>
+        <setting label="32003" type="number" id="port_3" default="88" visible="gt(-18,2)"/>
+        <setting label="32004" type="text" id="username_3" default="admin" visible="gt(-19,2)"/>
+        <setting label="32005" type="text" id="password_3" option="hidden" enable="!eq(-1,)" visible="gt(-20,2)"/>
     </category>
     <category label="32011">
         <setting label="32012" type="bool" id="motion_enable" default="true"/>

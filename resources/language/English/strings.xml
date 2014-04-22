@@ -2,11 +2,17 @@
 <strings>
   <string id="32000">Foscam HD</string>
 
-  <string id="32001">Basic</string>
+  <string id="32001">Cameras</string>
   <string id="32002">Host</string>
   <string id="32003">Port</string>
   <string id="32004">Username</string>
   <string id="32005">Password</string>
+
+  <string id="32006">Number of cameras</string>
+  <string id="32007">Camera 1</string>
+  <string id="32008">Camera 2</string>
+  <string id="32009">Camera 3</string>
+  <string id="32010">Camera 4</string>
 
   <string id="32011">Alarms</string>
   <string id="32012">Enable motion detection alarm preview</string>
