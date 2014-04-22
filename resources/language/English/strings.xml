@@ -46,7 +46,7 @@
   <string id="32055">Verbose</string>
 
   <string id="32101">No host specified</string>
-  <string id="32102">Please check the settings</string>
+  <string id="32102">Please check your network connection and the camera settings</string>
   <string id="32103">Error sending camera command</string>
   <string id="32104">Error configuring camera</string>
 </strings>

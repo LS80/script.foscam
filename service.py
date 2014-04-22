@@ -135,18 +135,19 @@ class Main(object):
                 return
 
             self.alarm_active = False
+            
             dev_state = self.camera.get_device_state()
-
-            for alarm, enabled in (('motionDetect', self.motion_enable),
-                                   ('sound', self.sound_enable)):
-                if enabled:
-                    param = "{0}Alarm".format(alarm)
-                    alarm_status = dev_state[param]
-                    utils.log_verbose("{0:s} = {1:d}".format(param, alarm_status))
-                    if alarm_status == 2:
-                        self.alarm_active = True
-                        utils.log_normal("Alarm detected")
-                        break
+            if dev_state:
+                for alarm, enabled in (('motionDetect', self.motion_enable),
+                                       ('sound', self.sound_enable)):
+                    if enabled:
+                        param = "{0}Alarm".format(alarm)
+                        alarm_status = dev_state[param]
+                        utils.log_verbose("{0:s} = {1:d}".format(param, alarm_status))
+                        if alarm_status == 2:
+                            self.alarm_active = True
+                            utils.log_normal("Alarm detected")
+                            break
 
             if self.alarm_active:
                 preview = gui.CameraPreview(self.duration, self.snapshot_interval, self.path,
