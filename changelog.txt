@@ -1,3 +1,6 @@
+0.0.17
+ - Make the previously playing media resume more quickly.
+
 0.0.16
  - Fixed a service script error when there is a network connection problem.
 
