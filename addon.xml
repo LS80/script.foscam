@@ -5,7 +5,7 @@
        provider-name="Leopold">
   <requires>
     <import addon="xbmc.python" version="2.13.0"/>
-    <import addon="script.module.requests2" version="2.2.1" optional="false"/>
+    <import addon="script.module.requests" version="2.3.0" optional="false"/>
   </requires>
   <extension point="xbmc.python.script" library="default.py"/>
   <extension point="xbmc.service" library="service.py" start="startup"/>

@@ -2,7 +2,7 @@ import time
 import urllib
 import xml.etree.ElementTree as ET
 
-import requests2 as requests
+import requests
 
 import utils
 
