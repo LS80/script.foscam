@@ -1,3 +1,6 @@
+0.0.18
+ - Fixed a broken dependency which caused the "Incompatible" message.
+
 0.0.17
  - Make the previously playing media resume more quickly.
 
