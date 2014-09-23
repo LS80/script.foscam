@@ -74,6 +74,16 @@ class Main(object):
             utils.log_normal("No host specified")
             return False
 
+        invalid = utils.invalid_user_char(user)
+        if invalid:
+            utils.log_error("Invalid character in user name: " + invalid)
+            return False
+
+        invalid = utils.invalid_password_char(password)
+        if invalid:
+            utils.log_error("Invalid character in password: " + invalid)
+            return False
+
         self.camera = foscam.Camera(host, port, user, password)
         success, msg = self.camera.test()
         if not success:

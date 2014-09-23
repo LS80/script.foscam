@@ -15,18 +15,21 @@ password = utils.get_setting('password')
 host = utils.get_setting('host')
 port = utils.get_int_setting('port')
 
-def error_dialog(msg):
-    xbmcgui.Dialog().ok(utils.get_string(32000), msg, " ", utils.get_string(32102))
-    utils.open_settings()
+if not host:
+    utils.error_dialog(utils.get_string(32101))
     sys.exit(1)
 
-if not host:
-    error_dialog(utils.get_string(32101))
+if utils.invalid_user_char(user, show_dialog=True):
+    sys.exit(1)
+
+if utils.invalid_password_char(password, show_dialog=True):
+    sys.exit(1)
 
 camera = foscam.Camera(host, port, user, password)
 success, msg = camera.test()
 if not success:
-    error_dialog(msg)
+    utils.error_dialog(msg)
+    sys.exit(1)
 
 
 class MoveButton(gui.Button):

@@ -22,6 +22,9 @@ ACTION_NAV_BACK = 92
 ACTION_STOP = 13
 ACTION_SELECT_ITEM = 7
 
+INVALID_PASSWORD_CHARS = ('{', '}', ':', ';', '!', '?', '@', '\\', '/')
+INVALID_USER_CHARS = ('@',)
+
 
 def log(message, level=xbmc.LOGNOTICE):
     xbmc.log("{0} v{1}: {2}".format(__id__, __version__, message), level=level)
@@ -68,6 +71,25 @@ def open_settings(callback=None):
     if callback is not None:
         callback()
     __addon__.openSettings()
+
+def invalid_char(credential, chars, stringid, show_dialog):
+    for char in chars:
+        if char in credential:
+            if show_dialog:
+                xbmcgui.Dialog().ok(get_string(32000), get_string(stringid),
+                                    " ", " ".join(chars))
+            return char
+    return False
+
+def invalid_password_char(password, show_dialog=False):
+    return invalid_char(password, INVALID_PASSWORD_CHARS, 32105, show_dialog)
+
+def invalid_user_char(user, show_dialog=False):
+    return invalid_char(user, INVALID_USER_CHARS, 32106, show_dialog)
+
+def error_dialog(msg):
+    xbmcgui.Dialog().ok(get_string(32000), msg, " ", get_string(32102))
+    open_settings()
 
 
 class SnapShot(object):

@@ -46,9 +46,11 @@
   <string id="32055">Verbose</string>
 
   <string id="32101">No host specified</string>
-  <string id="32102">Please check your network connection and the camera settings</string>
+  <string id="32102">Please check your network connection and the camera host and port. You must use an administrator account.</string>
   <string id="32103">Error sending camera command</string>
   <string id="32104">Error configuring camera</string>
+  <string id="32105">The following characters cannot be used in the password:</string>
+  <string id="32106">The following characters cannot be used in the user name:</string>
 </strings>
 
 
