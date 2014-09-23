@@ -1,3 +1,6 @@
+0.0.19
+ - Added checks for problem characters in the user name and password.
+
 0.0.18
  - Fixed a broken dependency which caused the "Incompatible" message.
 
