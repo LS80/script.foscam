@@ -86,7 +86,8 @@ class CameraPreview(xbmcgui.WindowDialog):
         self.closing = False
 
         with utils.SnapShot(self.path, self.interval, self.snapshot_cmd) as snapshot:
-            self.image = xbmcgui.ControlImage(x, y, width, height, snapshot)
+            filename = snapshot.save()
+            self.image = xbmcgui.ControlImage(x, y, width, height, filename)
             self.addControl(self.image)
             self.image.setAnimations(animations)
             
@@ -106,7 +107,9 @@ class CameraPreview(xbmcgui.WindowDialog):
         current_time = start_time
         while (current_time - start_time) <= self.duration:
             with utils.SnapShot(self.path, self.interval, self.snapshot_cmd) as snapshot:
-                self.image.setImage(snapshot, useCache=False)
+                filename = snapshot.save()
+                if filename:
+                    self.image.setImage(filename, useCache=False)
 
             if self.closing:
                 break

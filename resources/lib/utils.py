@@ -100,13 +100,19 @@ class SnapShot(object):
         self.filename = os.path.join(path, "{0}.jpg".format(self.time))
 
         self.get_data = get_data
-        
-        with open(self.filename, 'wb') as output:
-            log_verbose("Snapshot {0}".format(self.filename)) 
-            output.write(self.get_data())  
-        
+
     def __enter__(self):
-        return self.filename
+        return self
+
+    def save(self):
+        with open(self.filename, 'wb') as output:
+            log_verbose("Snapshot {0}".format(self.filename))
+            data = self.get_data()
+            if data:
+                output.write(data)
+                return self.filename
+            else:
+                return ""
 
     def __exit__(self, exc_type, exc_value, traceback):
         current_time = time.time()
