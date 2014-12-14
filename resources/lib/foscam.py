@@ -119,9 +119,14 @@ class Camera(object):
         return bool(response), msg
     
     def move(self, direction):
-        self.send_command("ptzMove" + direction.capitalize())
+        status = self.send_command("ptzMove" + direction.capitalize())
+        if not status:
+            return status
         time.sleep(0.5)
-        self.send_command("ptzStopRun")
+        status = self.send_command("ptzStopRun")
+        if not status:
+            return status
+        return True
 
     def get_mirror_and_flip(self):
         return self.send_command("getMirrorAndFlipSetting").values()
