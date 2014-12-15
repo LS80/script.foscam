@@ -1,3 +1,7 @@
+0.0.20
+ - Fixed log spam when using move buttons.
+ - Handle errors while retrieving snapshots for the preview.
+
 0.0.19
  - Added checks for problem characters in the user name and password.
 
