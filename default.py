@@ -67,7 +67,12 @@ class CameraControlDialog(xbmcgui.WindowDialog):
     def playVideo(self):
         self.player = utils.StopResumePlayer()
         self.player.maybe_stop_current()
-        self.player.play(camera.video_url)
+        if utils.get_bool_setting('mjpeg'):
+            camera.enable_mjpeg()
+            url = camera.mjpeg_url
+        else:
+            url = camera.video_url
+        self.player.play(url)
 
     def setupUi(self):
         Y_OFFSET = 100

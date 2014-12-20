@@ -141,7 +141,9 @@ class Main(object):
     def alarm_check(self):
         if self.motion_enable or self.sound_enable:
             player = xbmc.Player()
-            if player.isPlaying() and player.getPlayingFile() == self.camera.video_url:
+            if (player.isPlaying()
+                and player.getPlayingFile() in (self.camera.video_url,
+                                                self.camera.mjpeg_url)):
                 return
 
             self.alarm_active = False

@@ -44,6 +44,9 @@
   <string id="32053">Off</string>
   <string id="32054">Normal</string>
   <string id="32055">Verbose</string>
+  
+  <string id="32071">Video</string>
+  <string id="32072">Use MJPEG stream</string>
 
   <string id="32101">No host specified</string>
   <string id="32102">Please check your network connection and the camera host and port. You must use an administrator account.</string>

@@ -70,15 +70,20 @@ class SetConfigCommand(object):
         self._config[key] = value
 
     def send(self):
-        return self.camera.send_command(self.cmd, self._config)
+        return self.camera.send_command(self.cmd, **self._config)
 
 
 class Camera(object):
     def __init__(self, host, port, user, password):
-        self._url_fmt = "http://{0}:{1}/cgi-bin/CGIProxy.fcgi?cmd={{0}}&usr={2}&pwd={3}".format(host,
-                                                                                                port,
-                                                                                                user,
-                                                                                                password)
+        self._cmd_url_fmt = "http://{0}:{1}/cgi-bin/CGIProxy.fcgi?cmd={{0}}&usr={2}&pwd={3}".format(host,
+                                                                                                    port,
+                                                                                                    user,
+                                                                                                    password)
+
+        self._stream_url_fmt = "http://{0}:{1}@{2}:{3}/cgi-bin/CGIStream.cgi?cmd={{cmd}}".format(user,
+                                                                                                 password,
+                                                                                                 host,
+                                                                                                 port)
 
         self._video_url = "rtsp://{0}:{1}@{2}:{3}/videoMain".format(user, password, host, port)
 
@@ -86,9 +91,13 @@ class Camera(object):
     def video_url(self):
         return self._video_url
 
-    def send_command(self, cmd, params=None, data=False):
-        url = self._url_fmt.format(cmd)
-        if params is not None:
+    @property
+    def mjpeg_url(self):
+        return self._stream_url_fmt.format(cmd='GetMJStream')
+
+    def send_command(self, cmd, data=False, **params):
+        url = self._cmd_url_fmt.format(cmd)
+        if params:
             url += "&" + urllib.urlencode(params)
 
         utils.log_verbose(url)
@@ -163,7 +172,7 @@ class Camera(object):
     
     def get_snapshot(self):
         return self.send_command('snapPicture2', data=True)
-        
-        
 
+    def enable_mjpeg(self):
+        return self.send_command('setSubStreamFormat', format=1)
 

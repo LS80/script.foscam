@@ -23,6 +23,9 @@
         <setting label="32022" type="slider" id="snapshot_interval" default="1500" range="400,100,5000" option="int" subsetting="true"/>
         <setting label="32023" type="enum" id="snapshot_quality" lvalues="32024|32025|32026" default="1" option="int" subsetting="true"/>
     </category>
+    <category label="32071">
+        <setting label="32072" type="bool" id="mjpeg" default="false"/>
+    </category>
     <category label="32051">
         <setting label="32052" type="enum" id="debug" lvalues="32053|32054|32055" default="0"/>
     </category>
