@@ -48,15 +48,14 @@ class ToggleButton(xbmcgui.ControlRadioButton):
 
 
 class CameraPreview(xbmcgui.WindowDialog):
-    def __init__(self, duration, interval, path, scaling, position, snapshot_cmd):
+    def __init__(self, duration, path, scaling, position, mjpeg_stream):
         utils.log_normal("Showing preview")
         
         self.buttons = []
         
         self.duration = duration
-        self.interval = interval
         self.path = path
-        self.snapshot_cmd = snapshot_cmd
+        self.mjpeg_stream = mjpeg_stream
         
         self.setProperty('zorder', "99")
         
@@ -83,40 +82,26 @@ class CameraPreview(xbmcgui.WindowDialog):
                       ('WindowClose',
                        "effect=slide end={0:d} time=2000 tween=cubic easing=in".format(start))]
 
-        self.closing = False
-
-        with utils.SnapShot(self.path, self.interval, self.snapshot_cmd) as snapshot:
-            filename = snapshot.save()
-            self.image = xbmcgui.ControlImage(x, y, width, height, filename)
-            self.addControl(self.image)
-            self.image.setAnimations(animations)
+        self.image = xbmcgui.ControlImage(x, y, width, height, utils.TEXTURE_FMT.format('black'))
+        self.addControl(self.image)
+        self.image.setAnimations(animations)
             
-            trans = utils.TEXTURE_FMT.format('trans')
-            self.select_button = xbmcgui.ControlButton(x, y, width, height, "", trans, trans)
-            self.addControl(self.select_button)
-            self.select_button.setAnimations(animations)
+        trans = utils.TEXTURE_FMT.format('trans')
+        self.select_button = xbmcgui.ControlButton(x, y, width, height, "", trans, trans)
+        self.addControl(self.select_button)
+        self.select_button.setAnimations(animations)
 
-            button_scaling = 0.5 * scaling
-            button_width = int(round(Button.WIDTH * button_scaling))
-            self.close_button = Button(self, 'close', x + width - button_width - 10, y + 10, scaling=button_scaling)
-            self.addControl(self.close_button)
-            self.close_button.setAnimations(animations)
+        button_scaling = 0.5 * scaling
+        button_width = int(round(Button.WIDTH * button_scaling))
+        self.close_button = Button(self, 'close', x + width - button_width - 10, y + 10, scaling=button_scaling)
+        self.addControl(self.close_button)
+        self.close_button.setAnimations(animations)
 
     def start(self):
-        start_time = time.time()
-        current_time = start_time
-        while (current_time - start_time) <= self.duration:
-            with utils.SnapShot(self.path, self.interval, self.snapshot_cmd) as snapshot:
-                filename = snapshot.save()
-                if filename:
-                    self.image.setImage(filename, useCache=False)
-
-            if self.closing:
-                break
-            
-            current_time = time.time()
-        self.close()
-        return int(current_time - start_time)
+        with utils.ExtractMJPEGFrames(self.path, self.duration, self.mjpeg_stream,
+                                      self.image.setImage, False) as self.extract_mjpeg:
+            duration = self.extract_mjpeg.start()
+        return duration
 
     def onControl(self, control):
         if control == self.close_button:
@@ -137,6 +122,6 @@ class CameraPreview(xbmcgui.WindowDialog):
     def stop(self):
         utils.log_normal("Closing preview")
         self.removeControl(self.close_button)
-        self.closing = True
+        self.extract_mjpeg.stop()
         self.close()
 

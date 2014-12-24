@@ -52,9 +52,6 @@ class Main(object):
         response = self.camera.get_sound_detect_config()
         utils.set_setting('sound_sensitivity', str(response['sensitivity']))
         utils.set_setting('sound_trigger_interval', str(response['triggerInterval']))
-
-        response = self.camera.get_snapshot_config()
-        utils.set_setting('snapshot_quality', str(response['snapPicQuality']))
     
     def settings_changed(self):
         utils.log_normal("Applying settings")
@@ -97,7 +94,6 @@ class Main(object):
         self.sound_enable = utils.get_bool_setting('sound_enable')
 
         self.duration = utils.get_int_setting('preview_duration')
-        self.snapshot_interval = utils.get_int_setting('snapshot_interval')
         self.scaling = utils.get_float_setting('preview_scaling')
         self.position = utils.get_setting('preview_position').lower()
 
@@ -126,11 +122,7 @@ class Main(object):
             
             for iday in range(7):
                 command['schedule{0:d}'.format(iday)] = 2**48 - 1
-            self.send_command(command)            
-
-        command = self.camera.set_snapshot_config()
-        command['snapPicQuality'] = utils.get_int_setting('snapshot_quality')
-        self.send_command(command)
+            self.send_command(command)
             
     def send_command(self, command):
         response = command.send()
@@ -162,9 +154,10 @@ class Main(object):
                             break
 
             if self.alarm_active:
-                preview = gui.CameraPreview(self.duration, self.snapshot_interval, self.path,
+                mjpeg_stream = self.camera.get_mjpeg_stream()
+                preview = gui.CameraPreview(self.duration, self.path,
                                             self.scaling, self.position,
-                                            self.camera.get_snapshot)
+                                            mjpeg_stream)
                 preview.show()
                 self.duration_shown = preview.start()
                 del(preview)

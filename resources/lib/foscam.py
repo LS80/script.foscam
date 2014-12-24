@@ -176,3 +176,12 @@ class Camera(object):
     def enable_mjpeg(self):
         return self.send_command('setSubStreamFormat', format=1)
 
+    def get_mjpeg_stream(self):
+        self.enable_mjpeg()
+        try:
+            stream = requests.get(self.mjpeg_url, stream=True).raw
+            stream.readline()
+            return stream
+        except requests.RequestException as e:
+            utils.log_error(str(e))
+            return None

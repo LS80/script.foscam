@@ -20,8 +20,6 @@
         <setting label="32028" type="labelenum" id="preview_position" lvalues="32029|32030|32031|32032" default="0" subsetting="true"/>
         <setting label="32027" type="slider" id="preview_scaling" default="1.0" range="0.4,0.2,4.0" option="float" subsetting="true"/>
         <setting label="32021" type="slider" id="preview_duration" default="10" range="2,1,60" option="int" subsetting="true"/>
-        <setting label="32022" type="slider" id="snapshot_interval" default="1500" range="400,100,5000" option="int" subsetting="true"/>
-        <setting label="32023" type="enum" id="snapshot_quality" lvalues="32024|32025|32026" default="1" option="int" subsetting="true"/>
     </category>
     <category label="32071">
         <setting label="32072" type="bool" id="mjpeg" default="false"/>

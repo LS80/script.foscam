@@ -22,7 +22,6 @@
 
   <string id="32020">Trigger interval (seconds)</string>
   <string id="32021">Preview duration (seconds)</string>
-  <string id="32022">Minimum snapshot interval (milliseconds)</string>
 
   <string id="32023">Snapshot quality</string>
   <string id="32024">Low</string>

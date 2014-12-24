@@ -1,9 +1,12 @@
 import os
 import time
+import glob
 
 import xbmc
 import xbmcaddon
 import xbmcgui
+
+import requests
 
 
 __addon__ = xbmcaddon.Addon()
@@ -129,6 +132,63 @@ class SnapShot(object):
             pass
         else:
             log_verbose("Deleted {0}".format(self.filename))
+
+
+def get_mjpeg_frame(stream):
+    try:
+        stream.readline()
+        stream.readline()
+        content_length = stream.readline()
+        bytes = int(content_length.split(':')[-1])
+        stream.readline()
+        return stream.read(bytes)
+    except requests.RequestException as e:
+        utils.log_error(str(e))
+        return None
+
+class ExtractMJPEGFrames(object):
+    def __init__(self, path, duration, stream, callback, *args):
+        self.path = path
+        self.duration = duration
+        self.stream = stream
+        self.callback = callback
+        self.callback_args = args
+
+        self._stop = False
+
+    def __enter__(self):
+        return self
+
+    def stop(self):
+        self._stop = True
+
+    def start(self):
+        start_time = time.time()
+        current_time = start_time
+        frames = 0
+        while current_time < start_time + self.duration and not self._stop:
+            xbmc.sleep(1)
+            frame = get_mjpeg_frame(self.stream)
+            if frame:
+                filename = os.path.join(self.path, "snapshot.{0}.jpg".format(time.time()))
+                open(filename, 'w').write(frame)
+                self.callback(filename, *self.callback_args)
+                log_verbose("Snapshot {0}".format(filename))
+            current_time = time.time()
+            frames += 1
+        duration = current_time - start_time
+        log_normal("Average fps: {0:.2f}".format(frames / duration))
+        return int(duration)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stream.close()
+        for jpg in glob.glob(os.path.join(self.path, "snapshot.*.jpg")):
+            try:
+                os.remove(jpg)
+            except:
+                log_verbose("Unable to delete {0}".format(jpg))
+            else:
+                log_verbose("Deleted {0}".format(jpg))
 
 
 class Monitor(xbmc.Monitor):
