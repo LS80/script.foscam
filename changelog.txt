@@ -1,3 +1,11 @@
+0.0.21
+ - Added an option to show the mjpeg stream instead of the main h.264 encoded video.
+   This has the advantage of being much closer to a true live stream without any delay caused by buffering.
+   The disadvantages are the lack of sound, poorer image quality/frame rate and a squashed 4:3 aspect ratio.
+
+ - Improved the frame rate of the video preview to 10 fps
+   by using the mjpeg stream instead of individual jpeg snapshots.
+
 0.0.20
  - Fixed log spam when using move buttons.
  - Handle errors while retrieving snapshots for the preview.

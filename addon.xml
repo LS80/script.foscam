@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="script.foscam"
        name="Foscam HD"
-       version="0.0.20"
+       version="0.0.21"
        provider-name="Leopold">
   <requires>
     <import addon="xbmc.python" version="2.13.0"/>
@@ -11,9 +11,9 @@
   <extension point="xbmc.service" library="service.py" start="startup"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <summary lang="en">Video feed with image controls from a Foscam HD camera</summary>
-    <description lang="en">This script shows the main video feed from a Foscam HD camera such as the FI9821W, with controls for pan and tilt, and mirror/flip. An image preview will appear when motion is detected, and pressing select will open the video feed.</description>
-    <disclaimer>This add-on is not affiliated with Foscam.</disclaimer>
+    <summary lang="en">Foscam HD camera video with camera control</summary>
+    <description lang="en">This script shows the video feed from a Foscam HD camera (e.g. the FI9821W), with controls for pan/tilt, and mirror/flip. A video preview (no audio) can be triggered by motion or sound detection. Press select when the preview appears to open the video feed with camera controls.</description>
+    <disclaimer>This add-on is not affiliated with Foscam. This add-on will modify some settings on the camera itself such as motion and sound detection settings.</disclaimer>
     <forum>http://forum.xbmc.org/showthread.php?tid=190439</forum>
     <website>http://foscam.us/megapixel-ip-cameras-2/foscam-fi9821w-megapixel-wireless-ip-camera.html</website>
     <source>http://github.com/LS80/script.foscam.git</source>
